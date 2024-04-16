@@ -5,34 +5,10 @@ from django.utils.text import slugify
 from .utils import image_upload_to
 from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices
 
-class MODELNAMERetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    queryset = MODELNAME.objects.all()
-    serializer_class = MODELNAMEModelSerializer
-
-
-
-
 # Create your models here.
 
-class TestModel(models.Model):
-    name = models.CharField(max_length=255,)
-    latitude = models.FloatField(default=10)
-    longitude = models.FloatField(default=10)
-    category = models.ManyToManyField("archeomap.TestCategory", verbose_name=("категория"))
-
-    def __str__(self):
-        return self.name
-
-
-class TestCategory(models.Model):
-    category = models.CharField(max_length=255,)
-
-    def __str__(self):
-        return self.category
-
-
 class Monuments(models.Model):
-    #TODO: валидатор написать должно заканчиваться на _\d{3}
+    #TODO: валидатор написать должно начинаться с на ^\d{4}
     title = models.CharField(max_length=255, unique=True,
                             blank=False, verbose_name='Название памятника с идентификатором')
     name = models.CharField(max_length=255, blank=False, 
@@ -42,35 +18,40 @@ class Monuments(models.Model):
     landmark = models.TextField(verbose_name='Что сейчас на месте памятника', 
                                    default='Lorem ipsum', blank=True)
     address = models.CharField(verbose_name='Административный адрес',
-                                              default='Lorem ipsum',
-                                              max_length=255)
+                                default='Lorem ipsum',
+                                max_length=255)
     slug = models.SlugField(max_length=255, unique=True, 
-                            db_index=True, verbose_name="Slug-name", 
+                            verbose_name="Slug-name", 
                             null=True, blank=True)
     visible = models.BooleanField(default=True, verbose_name='Видимость записи')
-
     #TODO: подумать о том как легко организовать запрос к базе чтобы легко было отрисовывать. оптимизация
-    latitude = models.FloatField(verbose_name="Широта",
-                                 validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    latitude = models.DecimalField(verbose_name="Широта",
+                                 max_digits=9, decimal_places=6,
+                                 validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],
+                                 blank=False)
     #TODO: подумать о том как легко организовать запрос к базе чтобы легко было отрисовывать. оптимизация
-    longitude = models.FloatField(verbose_name='Долгота',
-                                  validators=[MinValueValidator(-180), MaxValueValidator(180)])
-    sources = models.ManyToManyField('Sources', 
-                                     verbose_name='Список использованных источников') #список источников использованных
-    content = models.ManyToManyField('Content', 
-                                     verbose_name='Аудио-видео контент') #аудио-видео контент про памятник 
+    longitude = models.DecimalField(verbose_name='Долгота',
+                                    max_digits=9, decimal_places=6,
+                                    validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)],
+                                    blank=False)
     dating = models.ManyToManyField('Dating',
-                                     verbose_name='Датировка')
+                                     verbose_name='Датировка',
+                                     blank=False)
     classification_category = models.ManyToManyField('Classification',
-                                                      verbose_name='Категория')
-    custom_category = models.ManyToManyField('CustomCategory', blank=True, 
-                                             verbose_name='Дополнительная категория')
-    research_years = models.ManyToManyField('ResearchYears', blank=True,
-                                            verbose_name='Годы исследования')
-    authors = models.ManyToManyField('Authors', blank=True,
-                                     verbose_name='Авторы раскопок')
-    organizations = models.ManyToManyField('Organizations', blank=True,
-                                           verbose_name='Организация')
+                                                      verbose_name='Категория',
+                                                      blank=False)
+    custom_category = models.ManyToManyField('CustomCategory',  
+                                             verbose_name='Дополнительная категория',
+                                             blank=True,)
+    research_years = models.ManyToManyField('ResearchYears',
+                                            verbose_name='Годы исследования',
+                                            blank=True,)
+    authors = models.ManyToManyField('Authors',
+                                     verbose_name='Авторы раскопок',
+                                     blank=True)
+    organizations = models.ManyToManyField('Organizations',
+                                           verbose_name='Организация',
+                                           blank=True,)
 
     class Meta:
         #TODO: посмотерть как класс Мета оформляет Мело в книге по джанго
@@ -79,6 +60,7 @@ class Monuments(models.Model):
 
     def get_absolute_url(self):
         return reverse('monumentlist', kwargs={'monument_slug': self.slug})
+    
     #TODO: разобраться с слагом, сейчас отдает только цифры в конце
     def save(self, *args, **kwargs):
         if not self.slug and self.title:  
@@ -88,9 +70,11 @@ class Monuments(models.Model):
     def __str__(self):
         return self.title
 
+
 class Dating(models.Model):
     dating_value = models.CharField(max_length=255,
                               choices=DatingChoices.choices,
+                              unique=True,
                               verbose_name='Датировка памятника')
 
     class Meta:
@@ -106,6 +90,7 @@ class Dating(models.Model):
 class Classification(models.Model):
     classification_category_value = models.CharField(max_length=255,
                                                choices=ClassificationChoices.choices,
+                                               unique=True,
                                                verbose_name='Тип')
 
     class Meta:
@@ -121,6 +106,7 @@ class Classification(models.Model):
 class CustomCategory(models.Model):
     custom_category_value = models.CharField(max_length=255,
                                        choices=CustomCategoryChoices.choices,
+                                       unique=True,
                                        verbose_name='Кастомная категория')
 
     class Meta:
@@ -177,6 +163,8 @@ class Organizations(models.Model):
         return f'{self.organization}'
     
 class Sources(models.Model):
+    monument = models.ForeignKey(Monuments, on_delete=models.CASCADE, 
+                                 related_name='sources', to_field='title')
     title = models.TextField(verbose_name='Библиографическая ссылка на источник')
     link = models.URLField(max_length=255, blank=True, null=True,
                            verbose_name='Ссылка на источник если есть')
@@ -189,9 +177,11 @@ class Sources(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.what_is}'
+        return f'{self.title}'
 
 class Content(models.Model):
+    monument = models.ForeignKey(Monuments, on_delete=models.CASCADE, 
+                                 related_name='content', to_field='title')
     title = models.CharField(max_length=255,
                              verbose_name='Тектовое описание единицы контента',
                              blank=False)

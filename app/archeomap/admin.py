@@ -2,14 +2,6 @@ from django.contrib import admin
 from .models.models import *
 # Register your models here.
 
-@admin.register(TestModel)
-class TestModelAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(TestCategory)
-class TestCategoryAdmin(admin.ModelAdmin):
-    pass
-
 @admin.register(Monuments)
 class MonumentsAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'name', 'latitude', 'longitude', 'visible')
@@ -56,14 +48,14 @@ class OrganizationsAdmin(admin.ModelAdmin):
 
 @admin.register(Sources)
 class SourcesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'link')
-    search_fields = ('title', 'link')
+    list_display = ('id', 'monument','title', 'link')
+    search_fields = ('monument',)
     list_per_page = 20
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'link')
-    search_fields = ('title', 'link')
+    list_display = ('id','monument', 'title', 'link')
+    search_fields = ('monument',)
     list_per_page = 20
 
 @admin.register(Images)

@@ -1,9 +1,14 @@
-def image_upload_to(instance, filename):
-    """
+def image_upload_to(instance, filename) -> str:
+    """Автоматическое создание пути для загрузки файла изображений
+    путь формируется из идентификатора памятника кастомного, первые 4 цифры + слаг
 
-    :param instance: объект бд
-    :param filename: имя загружаемого изображения
-    :return: корректный путь куда нужно загрузить файл выбранный
+    Args:
+        instance (): объект из таблицы Images
+        filename (str): имя файла загружаемого 
+
+    Returns:
+        str: строка, определяющая путь для сохранения
     """
-    monument = str(instance.monument).replace(' ', '_') if instance.monument else 'unknown'
-    return f'monuments/{monument}/{filename}'
+    identificator = str(instance.monument.title)[:4]
+    monument = str(instance.monument.slug).replace(' ', '_') if instance.monument else 'unknown'
+    return f'monuments/{identificator}_{monument}/{filename}'

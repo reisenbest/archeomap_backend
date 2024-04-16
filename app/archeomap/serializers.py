@@ -1,60 +1,93 @@
 # serializers.py
 from rest_framework import serializers
-from .models.models import *
+from archeomap.models.models import *
 
-class TestCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TestCategory
-        fields = ['category']
 
-class TestModelSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField(many=True)
 
-    class Meta:
-        model = TestModel
-        fields = ['name', 'latitude', 'longitude', 'category']
-
-class ImagesSerializer(serializers.ModelSerializer):
-    # image = serializers.SerializerMethodField()
-
+class ImagesOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = ('monument', 'image', 'description')
+        fields = ('image', 'description',)
 
-class MonumentsSerializer(serializers.ModelSerializer):
-    sources = serializers.SerializerMethodField()
-    content = serializers.SerializerMethodField()
+class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
     dating = serializers.SerializerMethodField()
     classification_category = serializers.SerializerMethodField()
     custom_category = serializers.SerializerMethodField()
-    research_years = serializers.SerializerMethodField()
+    research_years = serializers.SerializerMethodField()    
     authors = serializers.SerializerMethodField()
     organizations = serializers.SerializerMethodField()
-
+    sources = serializers.SerializerMethodField()
+    content = serializers.SerializerMethodField()
+    images = ImagesOutputSerializer(many=True)
+    
+    latitude = serializers.ModelField(model_field=Monuments._meta.get_field('latitude'))
+    longitude = serializers.ModelField(model_field=Monuments._meta.get_field('longitude'))
+    
     class Meta:
         model = Monuments
-        fields = '__all__'
+        fields = ('id', 'title', 'name', 'description', 'landmark', 'address', 
+                  'slug', 'visible', 'latitude', 'longitude','dating', 'classification_category', 
+                  'custom_category', 'research_years', 'authors', 'organizations',
+                   'sources','content', 'images',)
+    
+    def get_dating(self, monument_instance):
+        """
+        функция для оборачивания данный в нужный формат для вывода по гет запросу 
+        берем monument_instance, Обращаемся к полю m2m (датировка в данном случае)
+        берем все объекты dating связанные с переданным monument_instance
+        получаем саму дату dating_value
+        кладем ее в список
 
-    def get_sources(self, obj):
-        return [source.title for source in obj.sources.all()]
+        Args:
+            monument_instance (database objects): конкретный памятник, перебираем все памятники в представлении
+            и для каждого вызываем эту функцию
 
-    def get_content(self, obj):
-        return [{'title':content.title, 'link':content.link} for content in obj.content.all()]
+        Returns:
+            list: элементы списка - датировки, относящиеся к каждому конкретному памятнику
+        """
+        dating = [dating.dating_value for dating in monument_instance.dating.all()]
+        return dating
 
-    def get_dating(self, obj):
-        return [dating.dating_value for dating in obj.dating.all()]
+    def get_classification_category(self, monument_instance) -> list:
+        category = [classification.classification_category_value for classification in monument_instance.classification_category.all()]
+        return category
 
-    def get_classification_category(self, obj):
-        return [category.classification_category_value for category in obj.classification_category.all()]
+    def get_custom_category(self, monument_instance) -> list:
+        custom_category = [custom_category.custom_category_value for custom_category in monument_instance.custom_category.all()]
+        return custom_category
+    
+    def get_research_years(self, monument_instance) -> list:
+        research_years = [year_instance.year for year_instance in monument_instance.research_years.all()]
+        return research_years
 
-    def get_custom_category(self, obj):
-        return [category.custom_category_value for category in obj.custom_category.all()]
+    def get_authors(self, monument_instance) -> list:
+        authors = [author.author for author in monument_instance.authors.all()]
+        return authors
+    
+    def get_organizations(self, monument_instance) -> list:
+        organizations = [organization.organization for organization in monument_instance.organizations.all()]
+        return organizations
+    
+    def get_sources(self, monument_instance) -> list:
+        sources = [source.title for source in monument_instance.sources.all()]
+        return sources
+    
+    def get_content(self, monument_instance) -> list:
+        content = [content.title for content in monument_instance.content.all()]
+        return content
+    
 
-    def get_research_years(self, obj):
-        return [year.year for year in obj.research_years.all()]
 
-    def get_authors(self, obj):
-        return [author.author for author in obj.authors.all()]
 
-    def get_organizations(self, obj):
-        return [organization.organization for organization in obj.organizations.all()]
+
+    
+    
+
+    # def get_sources(self, monument):
+    #     return [author for author in monument.authors.all()]
+
+    # def get_Content(self, obj):
+    #     pass
+
+    # def get_images(self, obj):
+    #     pass

@@ -15,7 +15,7 @@ from archeomap.docs import *
 
 
 #TODO: тесты + вынести запрос в queries + добавить пагинацию?
-class MonumentsPublicAPIView(APIView):
+class MonumentsPublicListAPIView(APIView):
     output_serializer = MonumentsPublicOutputSerializer
 
     @get_monuments__public_scheme
@@ -35,3 +35,28 @@ class MonumentsPublicAPIView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+
+class MonumentPublicDetailAPIView(APIView):
+    output_serializer = MonumentsPublicOutputSerializer
+
+    def get(self, request, monument_id):
+        try:
+            monument = Monuments.objects.prefetch_related(
+                'dating',
+                'classification_category',
+                'custom_category',
+                'research_years',
+                'authors',
+                'organizations',
+                'sources',
+                'content',
+                'images',
+            ).get(id=monument_id)
+        except Monuments.DoesNotExist:
+            return Response(
+                {"error": "Monument does not exist"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        data = self.output_serializer(monument).data
+        return Response(data, status=status.HTTP_200_OK)

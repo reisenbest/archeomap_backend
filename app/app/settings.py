@@ -10,8 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import os
 from pathlib import Path
+from datetime import timedelta
+import environ
+import os
+
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-27=82!@874mb2wkjbln*^vznh+$plr&ikc=w4yq9j*alrr3kcy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = []
 
@@ -103,11 +109,11 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'archeomap_db',
-        'USER': 'postgres',
-        'PASSWORD': '606090824',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'NAME': env.str('DATABASE_NAME'),
+        'USER': env.str('DATABASE_USER'),
+        'PASSWORD': env.str('DATABASE_PASSWORD'),
+        'HOST': env.str('DATABASE_HOST'),
+        'PORT': env.str('DATABASE_PORT'),
     }
 }
 

@@ -12,6 +12,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from archeomap.docs import *
+from app.settings import BASE_DIR
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 
 #TODO: тесты + вынести запрос в queries + добавить пагинацию?
@@ -31,7 +36,7 @@ class MonumentsPublicListAPIView(APIView):
                                                         'images',
                                                         ).all()
         data = self.output_serializer(monuments, many=True).data
-        print(self.allowed_methods)
+        print(BASE_DIR)
         return Response(data, status=status.HTTP_200_OK)
 
 

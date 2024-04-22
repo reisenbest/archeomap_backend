@@ -1,0 +1,73 @@
+services:
+
+  database:
+    image: postgres:alpine
+    container_name: postgres
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+    env_file:
+      - app/.env/.env.local
+    environment:
+      - DB_HOST=database
+      - DB_NAME=${DATABASE_NAME}
+      - DB_USER=${DATABASE_USER}
+      - DB_PASS=${DATABASE_PASSWORD}
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      database:
+        condition: service_healthy
+    # админ автоматически создается
+    command: >
+      sh -c "python manage.py makemigrations && 
+      python manage.py migrate && 
+      python manage.py initadmin &&
+      python manage.py runserver 0.0.0.0:8000" 
+
+
+  nginx:
+    container_name: nginx
+    working_dir: /app
+    image: nginx:stable-alpine
+    restart: always
+    build:
+      dockerfile: ./Dockerfile
+      context: ./.docker/nginx/
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_storage:

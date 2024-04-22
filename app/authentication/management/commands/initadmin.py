@@ -7,7 +7,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Формируем путь к файлу .env в каталоге app
-env_file_path = os.path.join(BASE_DIR, 'app', '.env')
+env_file_path = os.path.join(BASE_DIR, '.env', '.env.local')
 
 # Создаем объект среды
 env = environ.Env()

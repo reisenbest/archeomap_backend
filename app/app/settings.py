@@ -35,9 +35,12 @@ SECRET_KEY = 'django-insecure-27=82!@874mb2wkjbln*^vznh+$plr&ikc=w4yq9j*alrr3kcy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
+# ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
+ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split()
+
+# CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split()
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*', 'http://89.111.170.193/*', 'https://89.111.170.193/*']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 # Application definition

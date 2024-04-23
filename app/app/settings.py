@@ -40,7 +40,8 @@ ALLOWED_HOSTS = ['*']
 
 
 # CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split()
-CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*', 'http://89.111.170.193/*', 'https://89.111.170.193/*']
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*', 'http://89.111.170.193/*', 'https://89.111.170.193/*',
+                        'http://89.111.170.193:8000/*', 'https://89.111.170.193:8000/*']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 # Application definition

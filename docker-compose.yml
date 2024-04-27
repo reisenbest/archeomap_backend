@@ -44,19 +44,18 @@ services:
       - media_volume:/app/media
 
   nginx:
-    container_name: nginx
-    build:
-      dockerfile: ./Dockerfile
-      context: ./.docker/nginx/
+    image: nginx:latest
+    volumes:
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/static
+      - media_volume:/media
     networks:
       - archeomap_network
     depends_on:
       - backend
     ports:
       - "80:80"
-    volumes:
-      - static_volume:/app/static
-      - media_volume:/app/media
+      
 
 volumes:
   static_volume:
@@ -66,3 +65,17 @@ volumes:
 networks:
   archeomap_network:
     driver: bridge
+  # nginx:
+  #   container_name: nginx
+  #   build:
+  #     dockerfile: ./Dockerfile
+  #     context: ./.docker/nginx/
+  #   networks:
+  #     - archeomap_network
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - static_volume:/app/static
+  #     - media_volume:/app/media

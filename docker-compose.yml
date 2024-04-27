@@ -1,0 +1,67 @@
+version: "3.9"
+services:
+  database:
+    privileged: true
+    image: postgres:15.6-alpine3.19
+    container_name: postgres
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+    env_file:
+      - /app/.env
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - archeomap_network
+
+  backend:
+    build:
+      context: ./
+    container_name: backend
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - archeomap_network
+    command: sh -c "
+      python manage.py collectstatic --noinput &&
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py initadmin &&
+      gunicorn app.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+  nginx:
+    container_name: nginx
+    build:
+      dockerfile: ./Dockerfile
+      context: ./.docker/nginx/
+    networks:
+      - archeomap_network
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_storage:
+
+networks:
+  archeomap_network:
+    driver: bridge

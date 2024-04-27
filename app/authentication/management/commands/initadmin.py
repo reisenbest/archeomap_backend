@@ -7,11 +7,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Формируем путь к файлу .env в каталоге app
-env_file_path = os.path.join(BASE_DIR, '.env', '.env.local')
+ 
 
 # Создаем объект среды
 env = environ.Env()
-
+env_file_path = os.path.join(BASE_DIR, '.env')
 # Читаем переменные окружения из файла .env
 env.read_env(env_file_path)
 

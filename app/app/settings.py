@@ -7,8 +7,8 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.0/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/5.0/ref/settings/
-"""
+https://docs.djangoproject.com/en/5.0/ref/settings/"""
+
 
 from pathlib import Path
 from datetime import timedelta
@@ -23,25 +23,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 env = environ.Env()
-env_file_path = os.path.join(BASE_DIR, '.env', '.env.local')
+env_file_path = os.path.join(BASE_DIR, '.env')
 env.read_env(env_file_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-27=82!@874mb2wkjbln*^vznh+$plr&ikc=w4yq9j*alrr3kcy'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-# ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
-ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
 
 
-# CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split()
-CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*', 'http://89.111.170.193/*', 'https://89.111.170.193/*',
-                        'http://89.111.170.193:8000/*', 'https://89.111.170.193:8000/*']
+
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split()
+
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 # Application definition

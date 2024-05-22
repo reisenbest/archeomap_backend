@@ -56,9 +56,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'archeomap',  # основное приложение отрисовывающее карту + структура БД
-    'content',  # контент-база (словарь, статьи, библиографический список, must-see content)
     'authentication',  # аутентификация пользователей
     'feedback',  # пользовательские отзывы
+    'glossary',  # археологический словарь
+    'bibliography',  # библиография 
 
     'djangoviz',  # для визуализации моделей
     'debug_toolbar',   # для оптимизации запросов в бд

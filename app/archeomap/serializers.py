@@ -68,12 +68,12 @@ class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
         organizations = [organization.organization for organization in monument_instance.organizations.all()]
         return organizations
     
-    def get_sources(self, monument_instance) -> list:
-        sources = [source.title for source in monument_instance.sources.all()]
+    def get_sources(self, monument_instance) -> dict:
+        sources = {source.title: source.link for source in monument_instance.sources.all()}
         return sources
     
-    def get_content(self, monument_instance) -> list:
-        content = [content.title for content in monument_instance.content.all()]
+    def get_content(self, monument_instance) -> dict:
+        content = {content.title: content.link for content in monument_instance.content.all()}
         return content
     
 

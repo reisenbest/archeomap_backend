@@ -205,7 +205,7 @@ class Images(models.Model):
     monument = models.ForeignKey(Monuments, on_delete=models.CASCADE, related_name='images', to_field='title')
     image = models.ImageField(upload_to=image_upload_to, verbose_name='Изображение', blank=True, null=True)
     description = models.TextField(verbose_name='Подпись к картинке', default='Lorem ipsum')
-    link = models.URLField(max_length=255,  blank=False,
+    link = models.URLField(max_length=255,  blank=True, null=True,
                            verbose_name='Ссылка на изображение')
     class Meta:
         verbose_name = 'Изображения для странички с описанием памятника'

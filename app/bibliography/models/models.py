@@ -14,7 +14,7 @@ class Bibliography(models.Model):
     publication_date = models.IntegerField(verbose_name='Год публикации', blank=True, null=True,
                                            validators=[MinValueValidator(1700), MaxValueValidator(2100)])
     source_identificator = models.CharField(
-        max_length=255, verbose_name='DOI\ISBN', blank=True)
+        max_length=255, verbose_name='DOI/ISBN', blank=True)
     slug = models.SlugField(max_length=255, unique=True,
                             verbose_name="Slug-name",
                             null=True, blank=True)

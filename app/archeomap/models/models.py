@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from .utils import image_upload_to
 from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 class Monuments(models.Model):
@@ -121,7 +121,10 @@ class CustomCategory(models.Model):
     
 #TODO: сделать валидацию для поля year
 class ResearchYears(models.Model):
-    year = models.IntegerField(unique=True, verbose_name='Год исследования', blank=False)
+    year = models.IntegerField(unique=True, 
+                               verbose_name='Год исследования', 
+                               blank=False, 
+                               validators=[MinValueValidator(1700), MaxValueValidator(2100)])
 
     class Meta:
         verbose_name = 'Года раскопок'
@@ -202,7 +205,8 @@ class Images(models.Model):
     monument = models.ForeignKey(Monuments, on_delete=models.CASCADE, related_name='images', to_field='title')
     image = models.ImageField(upload_to=image_upload_to, verbose_name='Изображение', blank=True, null=True)
     description = models.TextField(verbose_name='Подпись к картинке', default='Lorem ipsum')
-
+    link = models.URLField(max_length=255,  blank=False,
+                           verbose_name='Ссылка на изображение')
     class Meta:
         verbose_name = 'Изображения для странички с описанием памятника'
         verbose_name_plural = 'Изображения для странички с описанием памятника'

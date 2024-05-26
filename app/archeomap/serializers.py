@@ -7,7 +7,7 @@ from archeomap.models.models import *
 class ImagesOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = ('image', 'description',)
+        fields = ('image', 'description', 'link')
 
 class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
     dating = serializers.SerializerMethodField()

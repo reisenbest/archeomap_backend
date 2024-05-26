@@ -20,13 +20,22 @@ User = get_user_model()
 class Command(BaseCommand):
     def handle(self, *args, **options):
         if User.objects.count() == 0:
-            username = env('ADMIN_USERNAME')
-            email = env('ADMIN_EMAIL')
-            password = env('ADMIN_PASSWORD')
-            print('Creating account for %s (%s)' % (username, email))
-            admin = User.objects.create_superuser(email=email, password=password, username=username)
-            admin.is_active = True
-            admin.is_admin = True
-            admin.save()
+            username1 = env('ADMIN_USERNAME1')
+            email1 = env('ADMIN_EMAIL1')
+            password1 = env('ADMIN_PASSWORD1')
+            print('Creating account for %s (%s)' % (username1, email1))
+            admin1 = User.objects.create_superuser(email=email1, password=password1, username=username1)
+            admin1.is_active = True
+            admin1.is_admin = True
+            admin1.save()
+
+            username2 = env('ADMIN_USERNAME2')
+            email2 = env('ADMIN_EMAIL2')
+            password2 = env('ADMIN_PASSWORD2')
+            print('Creating account for %s (%s)' % (username2, email2))
+            admin2 = User.objects.create_superuser(email=email2, password=password2, username=username2)
+            admin2.is_active = True
+            admin2.is_admin = True
+            admin2.save()
         else:
             print('Admin accounts can only be initialized if no Accounts exist')

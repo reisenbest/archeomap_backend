@@ -60,7 +60,7 @@ class ContentAdmin(admin.ModelAdmin):
 
 @admin.register(Images)
 class ImagesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'monument', 'image', 'description')
+    list_display = ('id', 'monument', 'image', 'description', 'link')
     search_fields = ('monument__title', 'description')
     list_per_page = 20
 

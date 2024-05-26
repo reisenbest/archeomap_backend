@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
     path('api/', include('archeomap.urls')),
+    path('api/', include('bibliography.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),
 

@@ -13,10 +13,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from archeomap.docs import *
 from app.settings import BASE_DIR
-import environ
-
-env = environ.Env()
-environ.Env.read_env()
 
 
 #TODO: тесты + вынести запрос в queries + добавить пагинацию?

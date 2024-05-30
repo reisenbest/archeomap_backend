@@ -8,6 +8,6 @@ class BibliographyAdmin(admin.ModelAdmin):
                     'main_category', 'sub_category', 'slug', 'visible')
     list_filter = ('visible','publication_date')
     list_editable = ('visible',)
-    search_fields = ('title', 'name', 'description', 'source_identificator',
-                     'main_category', 'sub_category',)
+    search_fields = ('title', 'source_identificator',
+                     'main_category', 'sub_category','publication_date', 'source')
     list_per_page = 20

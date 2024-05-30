@@ -44,7 +44,7 @@ services:
       - media_volume:/app/media
 
   nginx:
-    image: nginx:latest
+    image: nginx:1.25.5-harver #докер заблочили в рф. нужно захардкодить уже скачанный у меня на vps образ чтобы не искал новый 
     volumes:
       - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/static

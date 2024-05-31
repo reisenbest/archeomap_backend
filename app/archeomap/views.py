@@ -30,6 +30,7 @@ class MonumentsPublicListAPIView(APIView):
                                                         'sources',
                                                         'content',
                                                         'images',
+                                                        'excavations_square',
                                                         ).all()
         data = self.output_serializer(monuments, many=True).data
         print(BASE_DIR)
@@ -52,6 +53,7 @@ class MonumentPublicDetailAPIView(APIView):
                 'sources',
                 'content',
                 'images',
+                'excavations_square',
             ).get(id=monument_id)
         except Monuments.DoesNotExist:
             return Response(

@@ -18,6 +18,7 @@ class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
     organizations = serializers.SerializerMethodField()
     sources = serializers.SerializerMethodField()
     content = serializers.SerializerMethodField()
+    excavations_square = serializers.SerializerMethodField()
     images = ImagesOutputSerializer(many=True)
     
     latitude = serializers.ModelField(model_field=Monuments._meta.get_field('latitude'))
@@ -28,7 +29,7 @@ class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'name', 'description', 'landmark', 'address', 
                   'slug', 'visible', 'latitude', 'longitude','dating', 'classification_category', 
                   'custom_category', 'research_years', 'authors', 'organizations',
-                   'sources','content', 'images',)
+                   'sources','content', 'images', 'excavations_square')
     
     def get_dating(self, monument_instance):
         """
@@ -76,18 +77,6 @@ class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
         content = {content.title: content.link for content in monument_instance.content.all()}
         return content
     
-
-
-
-
+    def get_excavations_square(self, monument_instance):
+         return [excavation.excavation_square for excavation in monument_instance.excavations_square.all()]
     
-    
-
-    # def get_sources(self, monument):
-    #     return [author for author in monument.authors.all()]
-
-    # def get_Content(self, obj):
-    #     pass
-
-    # def get_images(self, obj):
-    #     pass

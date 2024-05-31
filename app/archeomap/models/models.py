@@ -5,7 +5,10 @@ from django.utils.text import slugify
 from .utils import image_upload_to
 from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django_jsonform.models.fields import ArrayField
 # Create your models here.
+
+
 
 class Monuments(models.Model):
     #TODO: валидатор написать должно начинаться с на ^\d{4}
@@ -217,3 +220,30 @@ class Images(models.Model):
     def __str__(self):
         return f'{self.monument}'
 
+class ExcavationsSquare(models.Model):
+    monument = models.ForeignKey(Monuments, on_delete=models.CASCADE, 
+                                 related_name='excavations_square', to_field='title')
+    excavation_square = ArrayField(
+        ArrayField(
+            models.DecimalField(max_digits=15, decimal_places=12),
+            size=2,  # каждый вложенный массив должен содержать 2 элемента. 1 число широта, второе долгота точки
+        ),
+        size=100,  # максимальное количество вложенных массивов
+        blank=True,  # поле необязательно для заполнения
+        null=True    # разрешить хранение NULL значений в базе данных
+    )
+    description = models.TextField(verbose_name='Примечание, откуда взяты координаты', 
+                                   default='Lorem ipsum', blank=True)
+    
+    class Meta:
+        verbose_name = 'Координаты площади раскопок'
+        verbose_name_plural = 'Координаты площади раскопок'
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.monument}'
+
+   

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'feedback',  # пользовательские отзывы
     'glossary',  # археологический словарь
     'bibliography',  # библиография 
+    'digsquaretest', #тест для границ раскопов
 
     'djangoviz',  # для визуализации моделей
     'debug_toolbar',   # для оптимизации запросов в бд

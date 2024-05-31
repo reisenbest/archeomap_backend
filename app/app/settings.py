@@ -64,6 +64,7 @@ INSTALLED_APPS = [
 
     'djangoviz',  # для визуализации моделей
     'debug_toolbar',   # для оптимизации запросов в бд
+    'django_jsonform', #для кастмоных виджетов форм внутри админ панели
 
     'rest_framework',  # REST API
     'django_filters',  # фильтры

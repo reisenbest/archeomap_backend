@@ -1,18 +1,17 @@
 from django.db import models
-
+from django_jsonform.models.fields import ArrayField
 # Create your models here.
 
-from django.db import models
-from django.contrib.postgres.fields import ArrayField
+
 
 class MonumentTest(models.Model):
     title = models.CharField(max_length=255)
     excavation_area = ArrayField(
         ArrayField(
             models.FloatField(),
-            size=2,  # Внутренний массив всегда содержит 2 элемента (широта и долгота)
+            size=2,  # каждый вложенный массив должен содержать 2 элемента
         ),
-        size=None,  # Внешний массив может содержать произвольное количество элементов (пар координат)
+        size=20  # максимальное количество вложенных массивов
     )
 
     def __str__(self):

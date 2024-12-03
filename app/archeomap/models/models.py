@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
-from .utils import image_upload_to
+from .utils import image_upload_to, make_slug
 from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_jsonform.models.fields import ArrayField
@@ -26,7 +26,7 @@ class Monuments(models.Model):
     slug = models.SlugField(max_length=255, unique=True, 
                             verbose_name="Slug-name", 
                             null=True, blank=True)
-    visible = models.BooleanField(default=True, verbose_name='Видимость записи')
+    visible = models.BooleanField(default=False, verbose_name='Видимость записи')
     #TODO: подумать о том как легко организовать запрос к базе чтобы легко было отрисовывать. оптимизация
     latitude = models.DecimalField(verbose_name="Широта",
                                  max_digits=9, decimal_places=6,
@@ -39,10 +39,10 @@ class Monuments(models.Model):
                                     blank=False)
     dating = models.ManyToManyField('Dating',
                                      verbose_name='Датировка',
-                                     blank=False)
+                                     blank=True)
     classification_category = models.ManyToManyField('Classification',
                                                       verbose_name='Категория',
-                                                      blank=False)
+                                                      blank=True)
     custom_category = models.ManyToManyField('CustomCategory',  
                                              verbose_name='Дополнительная категория',
                                              blank=True,)
@@ -64,14 +64,14 @@ class Monuments(models.Model):
     def get_absolute_url(self):
         return reverse('monumentlist', kwargs={'monument_slug': self.slug})
     
-    #TODO: разобраться с слагом, сейчас отдает только цифры в конце
+    #TODO: при изменении названия памятника слаг не пересохраняется, остается прежним
     def save(self, *args, **kwargs):
-        if not self.slug and self.title:  
-            self.slug = slugify(self.title)
+        if not self.slug and self.name:  
+            self.slug = make_slug(self.name)
         super().save(*args, **kwargs)  
         
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Dating(models.Model):

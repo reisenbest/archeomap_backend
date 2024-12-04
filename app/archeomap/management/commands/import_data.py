@@ -1,4 +1,3 @@
-
 # archeomap/management/commands/import_data.py
 import os
 from openpyxl import load_workbook
@@ -42,22 +41,26 @@ class Command(BaseCommand):
                     landmark = row[column_indices['LANDMARK'] - 1]
                     address = row[column_indices['ADDRESS'] - 1]
 
-                    if title:  # Если есть обязательное поле 'TITLE WITH ID'
-                        monument, created = Monuments.objects.update_or_create(
+                    if title and name:  # Проверяем, что обязательные поля заполнены
+                        # Проверяем, существует ли запись с таким title или name
+                        if Monuments.objects.filter(title=title).exists():
+                            self.stdout.write(self.style.WARNING(f'Пропущен памятник с title: {title}, так как он уже существует'))
+                            continue
+                        if Monuments.objects.filter(name=name).exists():
+                            self.stdout.write(self.style.WARNING(f'Пропущен памятник с name: {name}, так как он уже существует'))
+                            continue
+
+                        # Если запись не найдена, создаём её
+                        monument = Monuments.objects.create(
                             title=title,
-                            defaults={
-                                'name': name,
-                                'description': description,
-                                'latitude': latitude,
-                                'longitude': longitude,
-                                'landmark': landmark,
-                                'address': address,
-                            }
+                            name=name,
+                            description=description,
+                            latitude=latitude,
+                            longitude=longitude,
+                            landmark=landmark,
+                            address=address,
                         )
-                        if created:
-                            self.stdout.write(self.style.SUCCESS(f'Создан памятник: {monument.name}'))
-                        else:
-                            self.stdout.write(self.style.SUCCESS(f'Обновлён памятник: {monument.name}'))
+                        self.stdout.write(self.style.SUCCESS(f'Создан памятник: {monument.name}'))
 
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'Ошибка при обработке строки {row}: {e}'))

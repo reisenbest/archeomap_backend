@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from .utils import image_upload_to, make_slug
-from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices
+from .choices import ClassificationChoices, CustomCategoryChoices, DatingChoices, IconChoices
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_jsonform.models.fields import ArrayField
 # Create your models here.
@@ -55,6 +55,10 @@ class Monuments(models.Model):
     organizations = models.ManyToManyField('Organizations',
                                            verbose_name='Организация',
                                            blank=True,)
+    icon_choice = models.CharField(verbose_name='Выбор иконки',
+                                   max_length=20,
+                                   choices=IconChoices,
+                                   default=IconChoices.RED)
 
     class Meta:
         #TODO: посмотерть как класс Мета оформляет Мело в книге по джанго

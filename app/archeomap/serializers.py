@@ -4,6 +4,7 @@ from archeomap.models.models import *
 
 
 
+
 class ImagesOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
@@ -80,5 +81,10 @@ class MonumentsPublicOutputSerializer(serializers.ModelSerializer):
     
     def get_excavations_square(self, monument_instance):
          return [excavation.excavation_square for excavation in monument_instance.excavations_square.all()]
+
+class ClassificatioCategoryOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classification
+        fields = ['classification_category_value']  # Возвращаем только нужное поле
 
     

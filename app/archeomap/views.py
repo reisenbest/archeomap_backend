@@ -63,3 +63,9 @@ class MonumentPublicDetailAPIView(APIView):
 
         data = self.output_serializer(monument).data
         return Response(data, status=status.HTTP_200_OK)
+    
+
+
+class ClassificationListAPIView(generics.ListAPIView):
+    queryset = Classification.objects.all()
+    serializer_class = ClassificatioCategoryOutputSerializer

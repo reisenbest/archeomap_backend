@@ -2,12 +2,12 @@
 set -e
 
 ### === CONFIG ===
-POSTGRES_CONTAINER_NAME="postgres"
-BACKEND_CONTAINER_NAME="backend"
-DB_USER="postgres"
-DB_NAME="archeomap_db"
+POSTGRES_CONTAINER_NAME="<<<POSTGRES_CONTAINER_NAME>>>"
+BACKEND_CONTAINER_NAME="<<<BACKEND_CONTAINER_NAME>>>"
+DB_USER="<<<DB_USER>>>"
+DB_NAME="<<<DB_NAME>>>"
 BASE_BACKUP_DIR="/root/archeomap_backup" ### example: /root/archeomap_backup
-VPS_IP="31.128.45.81"
+VPS_IP="<<<VPS_IP>>>"
 
 
 # добавляем дату к имени папки

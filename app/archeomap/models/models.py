@@ -22,7 +22,7 @@ class Monuments(models.Model):
                                    default='Lorem ipsum', blank=True)
     address = models.CharField(verbose_name='Административный адрес',
                                 default='Lorem ipsum',
-                                max_length=255)
+                                max_length=255, blank=True)
     slug = models.SlugField(max_length=255, unique=True, 
                             verbose_name="Slug-name", 
                             null=True, blank=True)

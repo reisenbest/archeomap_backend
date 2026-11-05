@@ -33,6 +33,8 @@ urlpatterns = [
 
     path('api/', include('archeomap.urls')),
     path('api/', include('bibliography.urls')),
+    path("api/", include("glossary.urls")),
+    path('api/', include('articles.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),
 

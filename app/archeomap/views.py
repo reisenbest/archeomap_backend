@@ -39,7 +39,7 @@ class MonumentsPublicListAPIView(APIView):
 
 
 class MonumentPublicDetailAPIView(APIView):
-    output_serializer = MonumentsPublicOutputSerializer
+    output_serializer = MonumentDetailOutputSerializer
 
     def get(self, request, monument_id):
         try:

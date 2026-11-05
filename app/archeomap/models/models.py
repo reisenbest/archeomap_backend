@@ -18,6 +18,8 @@ class Monuments(models.Model):
                             verbose_name='Название памятника (для пользователей)')
     description = models.TextField(verbose_name='Краткое описание', 
                                    default='Lorem ipsum', blank=True)
+    article = models.TextField(verbose_name="Полная статья для 'читать подробнее'",
+                                default="Lorem ipsum", blank=True) 
     landmark = models.TextField(verbose_name='Что сейчас на месте памятника', 
                                    default='Lorem ipsum', blank=True)
     address = models.CharField(verbose_name='Административный адрес',
@@ -70,8 +72,38 @@ class Monuments(models.Model):
     
     #TODO: при изменении названия памятника слаг не пересохраняется, остается прежним
     def save(self, *args, **kwargs):
-        if not self.slug and self.name:  
-            self.slug = make_slug(self.name)
+        # Пустой update_fields означает: ничего не сохранять.
+        if kwargs.get("update_fields") is not None:
+            if not kwargs["update_fields"]:
+                return
+
+        if not self.slug:
+            max_length = self._meta.get_field("slug").max_length
+
+            # Если из названия не получилось получить адрес,
+            # используем запасной вариант.
+            base_slug = make_slug(self.title) or "term"
+            base_slug = base_slug[:max_length].rstrip("-")
+
+            candidate = base_slug
+            number = 2
+
+            # Не учитываем саму текущую запись при редактировании.
+            other_terms = type(self).objects.exclude(pk=self.pk)
+
+            while other_terms.filter(slug=candidate).exists():
+                suffix = f"-{number}"
+                prefix = base_slug[:max_length - len(suffix)].rstrip("-")
+                candidate = f"{prefix}{suffix}"
+                number += 1
+
+            self.slug = candidate
+
+            if kwargs.get("update_fields") is not None:
+                kwargs["update_fields"] = (
+                    set(kwargs["update_fields"]) | {"slug"}
+                )
+
         super().save(*args, **kwargs)  
         
     def __str__(self):

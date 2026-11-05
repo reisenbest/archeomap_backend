@@ -87,4 +87,11 @@ class ClassificatioCategoryOutputSerializer(serializers.ModelSerializer):
         model = Classification
         fields = ['classification_category_value']  # Возвращаем только нужное поле
 
-    
+class MonumentDetailOutputSerializer(
+    MonumentsPublicOutputSerializer
+):
+    class Meta(MonumentsPublicOutputSerializer.Meta):
+        fields = (
+            *MonumentsPublicOutputSerializer.Meta.fields,
+            "article",
+        )

@@ -60,8 +60,10 @@ INSTALLED_APPS = [
     'feedback',  # пользовательские отзывы
     'glossary',  # археологический словарь
     'bibliography',  # библиография 
+    'articles', #образовательные статьи
 
     'django_jsonform', #кастомные виджеты для админ панели для площади раскопок
+    'tinymce', #виджет для кастомизации текста прямо в админке
     'djangoviz',  # для визуализации моделей
     'debug_toolbar',   # для оптимизации запросов в бд
 
@@ -213,6 +215,64 @@ SPECTACULAR_SETTINGS = {
     'REDOC_DIST': 'SIDECAR',
 }
 
+# Визуальный редактор описания памятника в Django admin.
+TINYMCE_DEFAULT_CONFIG = {
+    "height": 700,
+    "width": "100%",
+    "menubar": "edit view insert format table tools",
+    "plugins": (
+        "lists link image table charmap "
+        "searchreplace visualblocks code preview fullscreen"
+    ),
+ "toolbar": [
+        (
+            "undo redo | blocks fontfamily fontsize | "
+            "bold italic underline strikethrough"
+        ),
+        (
+            "forecolor backcolor | "
+            "alignleft aligncenter alignright alignjustify | "
+            "bullist numlist outdent indent"
+        ),
+        (
+            "link image monument_carousel table | "
+            "term_explanation term_explanation_remove | "
+            "blockquote hr charmap | "
+            "subscript superscript | removeformat | "
+            "searchreplace code preview fullscreen"
+        ),
+    ],
+    "extended_valid_elements": (
+    "div[class|style|title|contenteditable|"
+    "data-carousel-ids|data-carousel-version],"
+    "span[class|style|title|data-term-id]"
+),      
+
+    
+    "block_formats": (
+        "Абзац=p; Заголовок 2=h2; "
+        "Заголовок 3=h3; Заголовок 4=h4"
+    ),
+    "font_family_formats": (
+        "Arial=arial,helvetica,sans-serif;"
+        "Georgia=georgia,palatino,serif;"
+        "Times New Roman=times new roman,times,serif;"
+        "Verdana=verdana,geneva,sans-serif"
+    ),
+    "font_size_formats": (
+        "12px 14px 16px 18px 20px 24px 28px 32px 36px 48px"
+    ),
+    "image_caption": True,
+    "branding": False,
+    "content_style": (
+        "body { font-family: Arial, sans-serif; "
+        "font-size: 16px; line-height: 1.7; } "
+        "img { max-width: 100%; height: auto; } "
+        "figure { margin: 24px 0; } "
+        "figcaption { color: #666; font-size: 14px; }"
+    ),
+}
+
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # документация
@@ -250,8 +310,11 @@ REST_FRAMEWORK = {
 #     },
 # } # логгирование sql запросов в командную строку для режима разработки, в проде будет замедлять
 
+
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
     # ...
 ]
+
+
